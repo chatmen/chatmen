@@ -23,6 +23,7 @@
       
       <h4 class="mb-3">Your Infomation</h4>
       <form class="needs-validation" novalidate>
+        <!-- この中にメソッド属性がPOST, target属性がurl(Create判別ページのん) -->
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName">First name</label>
@@ -67,7 +68,11 @@
     </div>
     <hr class="mb-4">
     <hr class="mb-4">
-    <button class="btn btn-primary btn-lg btn-block" type="submit">Create Your Account</button>
+    <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="location.href='http://localhost:9000/login'">Create Your Account</button>
+    <p><a href="http://localhost:9000/signin">login </a>To signIn Page</p>
+    <p><a href="http://localhost:9000/complete">login </a>To Complete Page</p>
+        <!-- <input type="submit" value="Create your Account" onClick="location.href=""http://localhost:9000/login" > -->
+    <!-- ここinputでも良さそう -->
       </form>
     </div>
     </div>
