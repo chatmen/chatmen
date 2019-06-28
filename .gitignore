@@ -5,4 +5,9 @@ target
 /.classpath
 /.project
 /.settings
+/.gradlew
+/.gradlew.bat
+/.build.gradle
+/gradle/wrapper
+/.g8/form
 /RUNNING_PID
