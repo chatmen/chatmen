@@ -8,6 +8,6 @@ target
 /.gradlew
 /.gradlew.bat
 /.build.gradle
-/gradle/wrapper
+/gradle
 /.g8/form
 /RUNNING_PID
