@@ -24,6 +24,10 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   // def list()  = Action{
   //   DB.
   // }
+  def getAllTweet() =    Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.mainMenu())
+  }
+
   def index() =    Action.async { implicit request: Request[AnyContent] =>
     val id = User.Id(1)
     for {
@@ -31,7 +35,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     } yield Ok(s"$user")
   }
 
-  def login() =    Action { implicit request: Request[AnyContent] =>
+  def signin() =    Action { implicit request: Request[AnyContent] =>
     Ok(views.html.signin())
   }
 
