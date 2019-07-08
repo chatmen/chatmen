@@ -12,6 +12,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
 scalaVersion := "2.12.8"
 libraryDependencies += guice
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 libraryDependencies ++= Seq(
   // --[ Private ]------------------------------------------
@@ -21,5 +22,6 @@ libraryDependencies ++= Seq(
   "chatmen-app"  %% "chatmen"       % "1.0.1-SNAPSHOT",
 
   // --[ OSS ]----------------------------------------------
-  "mysql"                % "mysql-connector-java"     % "5.1.39"
+  "mysql"                % "mysql-connector-java"     % "5.1.39",
+  "com.adrianhurt" %% "play-bootstrap" % "1.5-P27-B4"
   )

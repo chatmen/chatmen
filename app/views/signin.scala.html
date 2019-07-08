@@ -1,4 +1,7 @@
+@(hoge: Form[Add])(implicit request:RequestHeader, messages: Messages)
+@import helper._
 <!DOCTYPE html>
+
 <html lang="ja">
   <head>
     <meta charset="utf-8">
@@ -11,8 +14,15 @@
     <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/bootstrap.css">
     <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/form/signin.css">
   </head>
+  @form(routes.HomeController.commit()) {
+    @CSRF.formField
+    @inputText(hoge("name"))
+    @inputText(hoge("email"))
+    @inputText(hoge("password"))
+    <button >send</button>
+   }
 
-  <body>
+    <body>
     <form class="form-signin" method="POST" action="/signin">
       <img class="mb-4" src="{{ site.baseurl }}/docs/{{ site.docs_version }}/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
@@ -29,8 +39,10 @@
       <p class="mt-5 mb-3 text-muted">&copy; 2019 chatmen by marbo</p>
     </form>
 
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </body>
 </html>
+
