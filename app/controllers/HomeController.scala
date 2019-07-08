@@ -5,22 +5,21 @@ import play.api._
 import play.api.mvc._
 import chatmen.udb.model.User
 import chatmen.udb.persistence.default._
-/**
- * This controller creates an `Action` to handle HTTP requests to the
- * application's home page.
- */
+
 @Singleton
 class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+  case class Add(name:String,email:String,password:String)
 
-  /**
-   * Create an Action to render an HTML page.
-   *
-   * The configuration in the `routes` file means that this method
-   * will be called nwhen the application receives a `GET` request with
-   * a path of `/`.
-    */
-  
   implicit lazy val executionContext = defaultExecutionContext
+  // //bodyをtext(文字列)にバインド
+  // val signUpForm = User(
+  //   mapping(
+  //     "id"          -> text,
+  //     "name"        -> text,
+  //     "email"       -> text,
+  //     "phoneNumber" -> text
+  //   )(Add.apply)(Add.unapply)
+  // )
   // def list()  = Action{
   //   DB.
   // }
@@ -34,6 +33,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
       user <- UserRepository.get(id)
     } yield Ok(s"$user")
   }
+
 
   def signin() =    Action { implicit request: Request[AnyContent] =>
     Ok(views.html.signin())
@@ -51,4 +51,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.mainMenu())
   }
 
+  def commit() = Action { implicit req =>
+    Ok("compiled")
+  }
 }
