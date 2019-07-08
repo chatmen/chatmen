@@ -5,21 +5,27 @@ import play.api._
 import play.api.mvc._
 import chatmen.udb.model.User
 import chatmen.udb.persistence.default._
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{AbstractController, Action, Controller, ControllerComponents}
+
+case class Add(name:String,email:String,password:String)
 
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
-  case class Add(name:String,email:String,password:String)
+class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc)with play.api.i18n.I18nSupport{
 
   implicit lazy val executionContext = defaultExecutionContext
-  // //bodyをtext(文字列)にバインド
-  // val signUpForm = User(
-  //   mapping(
-  //     "id"          -> text,
-  //     "name"        -> text,
-  //     "email"       -> text,
-  //     "phoneNumber" -> text
-  //   )(Add.apply)(Add.unapply)
-  // )
+  //bodyをtext(文字列)にバインド
+  val signUpForm = Form(
+    mapping(
+      "name"        -> text,
+      "email"       -> text,
+      "password" -> text
+    )(Add.apply)(Add.unapply)
+  )
+
+  val hoge = Form("name"        -> text)
   // def list()  = Action{
   //   DB.
   // }
@@ -36,7 +42,8 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
 
   def signin() =    Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.signin())
+    val a = "hoge"
+    Ok(views.html.signin(signUpForm))
   }
 
   def complete() = Action { implicit request: Request[AnyContent] =>
@@ -52,6 +59,14 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def commit() = Action { implicit req =>
-    Ok("compiled")
+    signUpForm.bindFromRequest.fold(
+      error =>{
+        BadRequest("error")
+      },
+      success => {
+        val a = success.name
+        Ok(s"$a")
+      }
+    )
   }
 }
