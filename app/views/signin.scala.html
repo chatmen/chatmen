@@ -13,7 +13,7 @@
   </head>
 
   <body>
-    <form class="form-signin">
+    <form class="form-signin" method="POST" action="/signin">
       <img class="mb-4" src="{{ site.baseurl }}/docs/{{ site.docs_version }}/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
       <label for="inputEmail" class="sr-only">Email address</label>
@@ -21,11 +21,9 @@
       <label for="inputPassword" class="sr-only">Password</label>
       <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
       <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
+
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="http://localhost:9000/main-menu">Sign in</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" >Sign in</button>
       <a href="http://localhost:9000/main-menu" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</a>
       <a href="http://localhost:9000/signup" >Create your Account?</a>
       <p class="mt-5 mb-3 text-muted">&copy; 2019 chatmen by marbo</p>
