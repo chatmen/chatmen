@@ -10,19 +10,19 @@ import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{AbstractController, Action, Controller, ControllerComponents}
 
-case class Add(name:String,email:String,password:String)
+case class UserAdd(name:String,email:String,password:String)
 
 @Singleton
 class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc)with play.api.i18n.I18nSupport{
 
   implicit lazy val executionContext = defaultExecutionContext
-  //bodyをtext(文字列)にバインド
-  val signUpForm = Form(
+  //signinのデータをtext(文字列)にバインド
+  val userForm = Form(
     mapping(
       "name"        -> text,
       "email"       -> text,
       "password" -> text
-    )(Add.apply)(Add.unapply)
+    )(UserAdd.apply)(UserAdd.unapply)
   )
 
   val hoge = Form("name"        -> text)
@@ -43,7 +43,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
   def signin() =    Action { implicit request: Request[AnyContent] =>
     val a = "hoge"
-    Ok(views.html.signin(signUpForm))
+    Ok(views.html.signin(userForm))
   }
 
   def complete() = Action { implicit request: Request[AnyContent] =>
@@ -59,13 +59,13 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def commit() = Action { implicit req =>
-    signUpForm.bindFromRequest.fold(
+    userForm.bindFromRequest.fold(
       error =>{
         BadRequest("error")
       },
       success => {
-        val a = success.name
-        Ok(s"$a")
+        val name = success.name
+        Ok(s"$name")
       }
     )
   }
