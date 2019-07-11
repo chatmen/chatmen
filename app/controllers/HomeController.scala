@@ -65,6 +65,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
       },
       success => {
         val name = success.name
+        // val user = User(success.name, success.email, success.passwoed)
         Ok(s"$name")
       }
     )
