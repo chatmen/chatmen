@@ -40,7 +40,6 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     } yield Ok(s"$user")
   }
 
-
   def signin() =    Action { implicit request: Request[AnyContent] =>
     val a = "hoge"
     Ok(views.html.signin(userForm))
