@@ -19,7 +19,7 @@ libraryDependencies ++= Seq(
   "net.ixias"    %% "ixias"         % "1.1.11",
   "net.ixias"    %% "ixias-aws"     % "1.1.11",
   "net.ixias"    %% "ixias-play"    % "1.1.11",
-  "chatmen-app"  %% "chatmen"       % "1.0.1-SNAPSHOT",
+  "chatmen-app"  %% "chatmen"       % "1.0.2-SNAPSHOT",
 
   // --[ OSS ]----------------------------------------------
   "mysql"                % "mysql-connector-java"     % "5.1.39",
