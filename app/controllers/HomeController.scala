@@ -21,7 +21,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     mapping(
       "name"        -> text,
       "email"       -> text,
-      "password" -> text
+      "password"    -> text
     )(UserAdd.apply)(UserAdd.unapply)
   )
 
