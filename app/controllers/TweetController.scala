@@ -13,8 +13,9 @@ import play.api.mvc.{AbstractController, Action, Controller, ControllerComponent
 import java.time.LocalDateTime
 import views.html.defaultpages.error
 import play.api.data._
+import play.api.data.format.Formats._
 
-case class Post(text: String, updatedAt: LocalDateTime, createdAt: LocalDateTime)
+case class Post(uid:Option[Long], text: String, updatedAt: LocalDateTime, createdAt: LocalDateTime)
 
 @Singleton
 class TweetController @Inject()(cc: ControllerComponents) extends AbstractController(cc)with play.api.i18n.I18nSupport{
@@ -23,11 +24,13 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
   //signinのデータをtext(文字列)にバインド
   val tweetForm = Form(
     mapping(
+      "uid"           -> optional(longNumber),
       "text"         -> text,
       "update"       -> localDateTime,
       "createdAt"    -> localDateTime
-    )(Post.apply)(Post.unapply)
+    )(Post.apply)(Post.unapply(_))
   )
+  val errorMessage = "error"
 
   def getAllTweet() =    Action.async { implicit request: Request[AnyContent] =>
     val id = Tweet.Id(1)
@@ -39,16 +42,40 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
   def post = Action{implicit req =>
     tweetForm.bindFromRequest.fold(
       error => {
-        val errorMessage = "error"
         BadRequest(errorMessage)
       },
       postRequest => {
-        val post = Post(postRequest.text, LocalDateTime.now, LocalDateTime.now)
+        val post = Post(postRequest.uid, postRequest.text, LocalDateTime.now, LocalDateTime.now)
         //TweetRepository.add(post)
         Ok(s"$post")
       }
     )
   }
 
+  def add() = Action { implicit request =>
+    tweetForm.bindFromRequest.fold(
+      error => {
+        BadRequest(errorMessage)
+      },
+      postRequest => {
+        //val post = tweetForm.bindFromRequest.get
+        val posts = Post(postRequest.uid, postRequest.text, LocalDateTime.now, LocalDateTime.now)
+        //TweetRepository.add(posts)
+        //Ok(views.html.index(TweetRepository.add(post), form))
+        Ok(s"$posts")
+        Redirect("/")
+      }
+    )
+  }
 
+  // def gets(uid: option[User.Id]) = action { implicit req =>
+  //   date match {
+  //     case some(date) => {
+  //       ok(views.html.index((postrepository.find(localdate.parse(date))), form))
+
+  //     }
+  //     //特定のユーザのtweetを表示
+  //     case none => ok(views.html.index((postrepository.find(localdate.now)), form))
+  //   }
+  // }
 }
