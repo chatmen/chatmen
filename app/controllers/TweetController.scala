@@ -6,6 +6,7 @@ import play.api.mvc._
 import chatmen.udb.model.User
 import chatmen.core.model.Tweet
 import chatmen.core.persistence.default._
+import chatmen.udb.persistence.default._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -47,7 +48,7 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
       postRequest => {
         val post = Post(postRequest.uid, postRequest.text, LocalDateTime.now, LocalDateTime.now)
         //TweetRepository.add(post)
-        Ok(s"$post")
+        Ok(post.toString)
       }
     )
   }
@@ -68,14 +69,17 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
     )
   }
 
-  // def gets(uid: option[User.Id]) = action { implicit req =>
-  //   date match {
-  //     case some(date) => {
-  //       ok(views.html.index((postrepository.find(localdate.parse(date))), form))
+  def gets(uid: Option[Long]) = Action.async { implicit req =>
+    for{
+      userid  <- UserEachRelationRepository.getFollowsOfUser(User.Id(uid.get))
+      tweet <- TweetRepository.filterByUserIds(userid)
+     }yield Ok(tweet.toString)
+  }
 
-  //     }
-  //     //特定のユーザのtweetを表示
-  //     case none => ok(views.html.index((postrepository.find(localdate.now)), form))
-  //   }
-  // }
+  def getsTweetId(uid: Option[Long]) = Action.async { implicit req =>
+    for{
+      tweet <- TweetRepository.filterByUserId((User.Id(uid.get)))
+    }yield Ok(s"${tweet.map(x => x.v.text)}")
+  }
+
 }
