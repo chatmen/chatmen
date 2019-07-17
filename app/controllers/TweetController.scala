@@ -52,6 +52,19 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
       }
     )
   }
+  //   //タイムライン機能(自分がフォローしてる人のツイート情報出力)
+  // def post(uid: User.Id) = Action.async{implicit req =>
+  //   tweetForm.bindFromRequest.fold(
+  //     error => {
+  //       BadRequest(errorMessage)
+  //     },
+  //     postRequest => {
+  //       val post = Post(postRequest.uid, TweetRepository.get(TweetRepository.filterByUserId(uid )), LocalDateTime.now, LocalDateTime.now)
+  //       //TweetRepository.add(post)
+  //       Ok(post.toString)
+  //     }
+  //   )
+  // }
 
   def add() = Action { implicit request =>
     tweetForm.bindFromRequest.fold(
