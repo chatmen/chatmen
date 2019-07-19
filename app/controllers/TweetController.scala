@@ -66,6 +66,7 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
   //   )
   // }
 
+  //Tweetのフォーム情報を表示
   def add() = Action { implicit request =>
     tweetForm.bindFromRequest.fold(
       error => {
@@ -82,6 +83,7 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
     )
   }
 
+  //uidのフォローしてる人全員のTweetの全情報をGet
   def gets(uid: Option[Long]) = Action.async { implicit req =>
     for{
       userid  <- UserEachRelationRepository.getFollowsOfUser(User.Id(uid.get))
@@ -89,10 +91,10 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
      }yield Ok(tweet.toString)
   }
 
+  //uidからTweetをGET
   def getsTweetId(uid: Option[Long]) = Action.async { implicit req =>
     for{
       tweet <- TweetRepository.filterByUserId((User.Id(uid.get)))
     }yield Ok(s"${tweet.map(x => x.v.text)}")
   }
-
 }

@@ -27,7 +27,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
     )(UserInfoAdd.apply)(UserInfoAdd.unapply)
   )
 
-
+  //ユーザのフォーム情報を表示
   def commitUserInfo() = Action { implicit req =>
     userInfoForm.bindFromRequest.fold(
       error =>{
@@ -41,8 +41,8 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
     )
   }
 
-  def hoge() = Action.async{implicit req =>
-
+  //認証機能: メアドから、同一idのパスワードを取得し、ハッシュ化し、パスワードの検証
+  def checkUser() = Action.async{implicit req =>
     val form = ("e@s.net","hoge")
     for{
       user   <- UserRepository.getEmail(form._1)
