@@ -33,7 +33,8 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
   )
   val errorMessage = "error"
 
-  def getAllTweet() =    Action.async { implicit request: Request[AnyContent] =>
+  //
+  def getTweetDate() =    Action.async { implicit request: Request[AnyContent] =>
     val id = Tweet.Id(1)
     for {
       tweet <- TweetRepository.get(id)
@@ -52,19 +53,6 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
       }
     )
   }
-  //   //タイムライン機能(自分がフォローしてる人のツイート情報出力)
-  // def post(uid: User.Id) = Action.async{implicit req =>
-  //   tweetForm.bindFromRequest.fold(
-  //     error => {
-  //       BadRequest(errorMessage)
-  //     },
-  //     postRequest => {
-  //       val post = Post(postRequest.uid, TweetRepository.get(TweetRepository.filterByUserId(uid )), LocalDateTime.now, LocalDateTime.now)
-  //       //TweetRepository.add(post)
-  //       Ok(post.toString)
-  //     }
-  //   )
-  // }
 
   //Tweetのフォーム情報を表示
   def add() = Action { implicit request =>
@@ -83,16 +71,24 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
     )
   }
 
-  //uidのフォローしてる人全員のTweetの全情報をGet
-  def gets(uid: Option[Long]) = Action.async { implicit req =>
+  //フォローしてる人全員のTweetの全情報を取得
+  def getTweetByFollowId(uid: Option[Long]) = Action.async { implicit req =>
     for{
       userid  <- UserEachRelationRepository.getFollowsOfUser(User.Id(uid.get))
       tweet <- TweetRepository.filterByUserIds(userid)
-     }yield Ok(tweet.toString)
+    }yield Ok(s"${tweet.map(x => x.v.text)}")
   }
 
-  //uidからTweetをGET
-  def getsTweetId(uid: Option[Long]) = Action.async { implicit req =>
+  //フォローしてる人全員のTweet内容を取得
+  def getTweetDateByFollowId(uid: Option[Long]) = Action.async { implicit req =>
+    for{
+      userid  <- UserEachRelationRepository.getFollowsOfUser(User.Id(uid.get))
+      tweet <- TweetRepository.filterByUserIds(userid)
+    }yield Ok(tweet.toString)
+  }
+
+  //特定ユーザのTweet内容をGET
+  def getTweetDateByUserId(uid: Option[Long]) = Action.async { implicit req =>
     for{
       tweet <- TweetRepository.filterByUserId((User.Id(uid.get)))
     }yield Ok(s"${tweet.map(x => x.v.text)}")
