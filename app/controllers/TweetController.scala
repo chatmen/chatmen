@@ -17,6 +17,7 @@ import play.api.data._
 import play.api.data.format.Formats._
 
 case class Post(uid:Option[Long], text: String, updatedAt: LocalDateTime, createdAt: LocalDateTime)
+case class Tweet(text: String)
 
 @Singleton
 class TweetController @Inject()(cc: ControllerComponents) extends AbstractController(cc)with play.api.i18n.I18nSupport{
@@ -30,6 +31,13 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
       "update"       -> localDateTime,
       "createdAt"    -> localDateTime
     )(Post.apply)(Post.unapply(_))
+  )
+
+  //signinのデータをtext(文字列)にバインド
+  val tweetTextForm = Form(
+    mapping(
+      "text"         -> text
+    )(Tweet.apply)(Tweet.unapply(_))
   )
   val errorMessage = "error"
 
@@ -67,6 +75,22 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
         //TweetRepository.add(posts)
         //Ok(views.html.index(TweetRepository.add(post), form))
         Ok(s"$posts")
+        Redirect("/")
+      }
+    )
+  }
+
+  //Tweetの投稿
+  def postTweet() = Action{implicit req =>
+    tweetTextForm.bindFromRequest.fold(
+      error => {
+        BadRequest(errorMessage)
+      },
+      postRequest => {
+        //val post = tweetForm.bindFromRequest.get
+        val tweet = Tweet(postRequest.text)
+        //TweetRepository.add(posts)
+        Ok(s"$tweet")
         Redirect("/")
       }
     )
