@@ -11,15 +11,16 @@ GET     /signup                     controllers.HomeController.sendForm
 GET     /main-menu                  controllers.HomeController.mainMenu
 GET     /complete                   controllers.HomeController.complete
 
+
 GET     /tweet                      controllers.TweetController.getTweetByFollowId(uid: Option[Long])
 GET     /tweet/date                 controllers.TweetController.getTweetDate
 GET     /tweet/text                 controllers.TweetController.getTweetDateByUserId(uid: Option[Long])
+GET     /tweet/posts                controllers.TweetController.getTweetDate()
+POST    /tweet/posts                controllers.TweetController.add()
 
-GET     /tweet/posts                 controllers.TweetController.getTweetDate()
-POST    /tweet/posts                 controllers.TweetController.add()
-
-GET     /user/check                  controllers.UserController.checkUser()
+GET     /user/check                 controllers.UserController.checkUser()
 #GET    /user/add                   controllers.UserController.commitUserInfo()
+GET     /user/register              controllers.UserController.registerUser()
 
 
 # Map static resources from the /public folder to the /assets URL path
