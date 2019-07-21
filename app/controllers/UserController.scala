@@ -4,14 +4,18 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 import chatmen.udb.model._
+import chatmen.core.model._
 import chatmen.udb.persistence.default._
+import chatmen.core.persistence.default._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{AbstractController, Action, Controller, ControllerComponents}
+import views.html.defaultpages.error
+import play.api.data._
+import play.api.data.format.Formats._
 
 case class UserInfoAdd(name:String,email:String,password:String)
-
 case class UserAuth(email: String, password: String)
 
 @Singleton
@@ -32,7 +36,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
     mapping(
       "email"       -> text,
       "password"    -> text
-    )(userAuth.apply)(userAuth.unapply)
+    )(UserAuth.apply)(UserAuth.unapply)
   )
 
   //ユーザのフォーム情報を表示
@@ -50,43 +54,32 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   //会員登録
-  def registerUser() = Action{implicit req =>
-    userRegiForm.bindFromRequest.fold(
-      error => {
-        BadRequest("error")
-      },
-      success => {
-        val user = UserInfo(success.name, success.email, success.password)
-        val hashFromPassword = UserPassword.hash(success.password)
-        val addUser          = User.WithNoId(success.name, success.email)
-        for{
-          id             <- UserRepository.add(addUser)
-          passByWithNoId <- UserPassword.WithNoId(User.Id(id), hashPass)
-          pass           <- UserPasswordRepository.update(passByWithNoId)
-        }yield Ok(id)
-      }
-    )
+  def registerUser() = Action.async{implicit req =>
+    val post = userInfoForm.bindFromRequest.get
+    val user = UserInfoAdd(post.name, post.email, post.password)
+    val hashFromPassword = UserPassword.hash(post.password)
+    val addUser          = User.WithNoId(post.name, post.email)
+    for{
+      id                <- UserRepository.add(addUser)
+      passByWithNoId = UserPassword.WithNoId(User.Id(id), hashFromPassword)
+      pass           <- UserPasswordRepository.update(passByWithNoId)
+    }yield Ok(id.toString)
   }
 
   //フォームを受け取り、認証
-  def checkUserByForm() = Action{implicit req =>
-    userAuthForm.bindFromRequest.fold(
-      error => {
-        BadRequest("error")
-      },
-      success => {
-        val form    = (success.email, success.password)
-        for{
-          user   <- UserRepository.getEmail(form._1)
-          pass   <- UserPasswordRepository.get(user.get.id)
-          result = UserPassword.verify(form._2 ,pass.get.v.hash)
-        }yield result match {
-          case true  => Ok(s"${user.get.v}")
-          case false => BadRequest("user not exist")
-        }
-      }
-    )
+  def checkUserByForm() = Action.async{implicit req =>
+    val post = userAuthForm.bindFromRequest.get
+    val form = (post.email, post.password)
+     for{
+       user   <- UserRepository.getEmail(form._1)
+       pass   <- UserPasswordRepository.get(user.get.id)
+       result =  UserPassword.verify(form._2 ,pass.get.v.hash)
+     }yield result match {
+       case true  => Ok(s"${user.get.v}")
+       case false => BadRequest("user not exist")
+     }
   }
+
   //認証機能: メアドから、同一idのパスワードを取得し、ハッシュ化し、パスワードの検証
   def checkUser() = Action.async{implicit req =>
     val form = ("e@s.net","hoge")

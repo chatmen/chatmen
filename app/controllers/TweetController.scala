@@ -3,10 +3,10 @@ package controllers
 import javax.inject._
 import play.api._
 import play.api.mvc._
-import chatmen.udb.model.User
-import chatmen.core.model.Tweet
-import chatmen.core.persistence.default._
+import chatmen.udb.model._
+import chatmen.core.model._
 import chatmen.udb.persistence.default._
+import chatmen.core.persistence.default._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -17,7 +17,7 @@ import play.api.data._
 import play.api.data.format.Formats._
 
 case class Post(uid:Option[Long], text: String, updatedAt: LocalDateTime, createdAt: LocalDateTime)
-case class Tweet(text: String)
+case class TweetContent(text: String)
 
 @Singleton
 class TweetController @Inject()(cc: ControllerComponents) extends AbstractController(cc)with play.api.i18n.I18nSupport{
@@ -37,12 +37,12 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
   val tweetTextForm = Form(
     mapping(
       "text"         -> text
-    )(Tweet.apply)(Tweet.unapply(_))
+    )(TweetContent.apply)(TweetContent.unapply(_))
   )
   val errorMessage = "error"
 
   //uidのTweet全情報を表示する
-  def getTweetDate() =    Action.async { implicit request: Request[AnyContent] =>
+  def getTweetDate() = Action.async { implicit req =>
     val id = Tweet.Id(1)
     for {
       tweet <- TweetRepository.get(id)
@@ -88,7 +88,7 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
       },
       postRequest => {
         //val post = tweetForm.bindFromRequest.get
-        val tweet = Tweet(postRequest.text)
+        val tweet = TweetContent(postRequest.text)
         //TweetRepository.add(posts)
         Ok(s"$tweet")
         Redirect("/")
