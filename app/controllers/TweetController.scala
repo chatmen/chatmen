@@ -33,7 +33,7 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
   )
   val errorMessage = "error"
 
-  //
+  //uidのTweet全情報を表示する
   def getTweetDate() =    Action.async { implicit request: Request[AnyContent] =>
     val id = Tweet.Id(1)
     for {
@@ -41,6 +41,7 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
     }yield Ok(s"$tweet")
   }
 
+  //Tweetのフォームの内容を表示する
   def post = Action{implicit req =>
     tweetForm.bindFromRequest.fold(
       error => {
