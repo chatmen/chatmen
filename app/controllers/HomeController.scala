@@ -40,18 +40,18 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     } yield Ok(s"$user")
   }
 
-  def signin() =    Action { implicit request: Request[AnyContent] =>
-    val a = "hoge"
-    Ok(views.html.signin(userForm))
-  }
+  // def signin() =    Action { implicit request: Request[AnyContent] =>
+  //   val a = "hoge"
+  //   Ok(views.html.signin(userInfoForm))
+  // }
 
   def complete() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.complete())
   }
 
-  def sendForm() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.signup())
-  }
+  // def sendForm() = Action { implicit request: Request[AnyContent] =>
+  //   Ok(views.html.signup(userInfoForm))
+  // }
 
   def mainMenu() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.mainMenu())

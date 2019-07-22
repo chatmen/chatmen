@@ -92,6 +92,17 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
       case false => BadRequest("user not exist")
     }
   }
+
+  //signin画面の表示
+    def signin() =    Action { implicit request: Request[AnyContent] =>
+    //val a = "hoge"
+    Ok(views.html.signin(userInfoForm))
+  }
+
+  //signup画面の表示
+  def sendForm() = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.signup(userInfoForm))
+  }
 }
 
 

@@ -1,0 +1,27 @@
+@(hoge: Form[PostTweet])(implicit request:RequestHeader, messages: Messages)
+@import helper._
+@import controllers.UserController
+@import controllers.TweetController
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Welcome to Chatmen</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/signup/form-validation.css">
+  </head>
+  @form(routes.TweetController.postTweet()) {
+    @CSRF.formField
+    @inputText(hoge("id"))
+    @inputText(hoge("Tweet内容"))
+    <button onclick="location.href='http://localhost:9000/complete'">send</button>
+    }
+    <body>
+    </body>
+</html>

@@ -18,6 +18,7 @@ import play.api.data.format.Formats._
 
 case class Post(uid:Option[Long], text: String, updatedAt: LocalDateTime, createdAt: LocalDateTime)
 case class TweetContent(text: String)
+case class PostTweet(uid: Long, text: String)
 
 @Singleton
 class TweetController @Inject()(cc: ControllerComponents) extends AbstractController(cc)with play.api.i18n.I18nSupport{
@@ -38,6 +39,13 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
     mapping(
       "text"         -> text
     )(TweetContent.apply)(TweetContent.unapply(_))
+  )
+
+  val postTweetForm = Form(
+    mapping(
+      "uid"          -> longNumber,
+      "text"         -> text
+    )(PostTweet.apply)(PostTweet.unapply(_))
   )
   val errorMessage = "error"
 
@@ -81,19 +89,12 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
   }
 
   //Tweetの投稿
-  def postTweet() = Action{implicit req =>
-    tweetTextForm.bindFromRequest.fold(
-      error => {
-        BadRequest(errorMessage)
-      },
-      postRequest => {
-        //val post = tweetForm.bindFromRequest.get
-        val tweet = TweetContent(postRequest.text)
-        //TweetRepository.add(posts)
-        Ok(s"$tweet")
-        Redirect("/")
-      }
-    )
+  def postTweet() = Action.async{implicit req =>
+    val post     = postTweetForm.bindFromRequest.get
+    val addTweet = Tweet.WithNoId(User.Id(post.uid), post.text)
+    for{
+      newTwwet    <- TweetRepository.add(addTweet)
+    }yield Ok(newTwwet.toString)
   }
 
   //フォローしてる人全員のTweetの全情報を取得

@@ -1,4 +1,4 @@
-@(hoge: Form[UserAdd])(implicit request:RequestHeader, messages: Messages)
+@(hoge: Form[UserInfoAdd])(implicit request:RequestHeader, messages: Messages)
 @import helper._
 <!DOCTYPE html>
 
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/bootstrap.css">
     <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/form/signin.css">
   </head>
-  @form(routes.HomeController.commit()) {
+  @form(routes.UserController.commitUserInfo()) {
     @CSRF.formField
     @inputText(hoge("name"))
     @inputText(hoge("email"))

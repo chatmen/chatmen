@@ -5,22 +5,38 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-GET     /signin                     controllers.HomeController.signin
-POST    /signin                     controllers.HomeController.commit
-GET     /signup                     controllers.HomeController.sendForm
+GET     /signin                     controllers.UserController.signin
+POST    /signin                     controllers.UserController.commitUserInfo
+GET     /signup                     controllers.UserController.sendForm
 GET     /main-menu                  controllers.HomeController.mainMenu
 GET     /complete                   controllers.HomeController.complete
+GET     /tweet                      controllers.TweetController.postTweet
 
-
-GET     /tweet                      controllers.TweetController.getTweetByFollowId(uid: Option[Long])
-GET     /tweet/date                 controllers.TweetController.getTweetDate
-GET     /tweet/text                 controllers.TweetController.getTweetDateByUserId(uid: Option[Long])
+#uidのTweet全情報を表示
 GET     /tweet/posts                controllers.TweetController.getTweetDate()
 POST    /tweet/posts                controllers.TweetController.add()
+#Tweetのフォーム内容を表示
+GET     /tweet/post                 controllers.TweetController.post()
+#Tweetの投稿
+GET     /tweet/add                 controllers.TweetController.postTweet()
+#フォローしてる人全員のTweet全情報を取得
+GET     /tweet                      controllers.TweetController.getTweetByFollowId(uid: Option[Long])
+#フォローしてる人全員のTweet内容を取得
+GET     /tweet/text                 controllers.TweetController.getTweetDateByFollowId(uid: Option[Long])
+#特定ユーザのTweet内容をGET
+GET     /tweet/text-user            controllers.TweetController.getTweetDateByUserId(uid: Option[Long])
 
-GET     /user/check                 controllers.UserController.checkUser()
+
+
+#ユーザのフォーム情報を表示
 #GET    /user/add                   controllers.UserController.commitUserInfo()
+#会員登録
 GET     /user/register              controllers.UserController.registerUser()
+#フォームを受け取り, 認証
+GET     /user/check                 controllers.UserController.checkUser()
+#認証
+GET     /user/check                 controllers.UserController.checkUser()
+
 
 
 # Map static resources from the /public folder to the /assets URL path
