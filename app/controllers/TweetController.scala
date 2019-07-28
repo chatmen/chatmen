@@ -19,12 +19,13 @@ import play.api.data.format.Formats._
 case class Post(uid:Option[Long], text: String, updatedAt: LocalDateTime, createdAt: LocalDateTime)
 case class TweetContent(text: String)
 case class PostTweet(uid: Long, text: String)
+case class Follow(targetid: Long)
 
 @Singleton
 class TweetController @Inject()(cc: ControllerComponents) extends AbstractController(cc)with play.api.i18n.I18nSupport{
 
   implicit lazy val executionContext = defaultExecutionContext
-  //signinのデータをtext(文字列)にバインド
+  //tweet全部のデータをtext(文字列)にバインド
   val tweetForm = Form(
     mapping(
       "uid"           -> optional(longNumber),
@@ -34,19 +35,28 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
     )(Post.apply)(Post.unapply(_))
   )
 
-  //signinのデータをtext(文字列)にバインド
+  //tweetの内容をtext(文字列)にバインド
   val tweetTextForm = Form(
     mapping(
       "text"         -> text
     )(TweetContent.apply)(TweetContent.unapply(_))
   )
 
+  //Tweetを投稿するためにフォームの内容をバインド
   val postTweetForm = Form(
     mapping(
       "uid"          -> longNumber,
       "text"         -> text
     )(PostTweet.apply)(PostTweet.unapply(_))
   )
+
+  //followの内容をlongにバインド
+  val followForm = Form(
+    mapping(
+      "targetid"         -> longNumber
+    )(Follow.apply)(Follow.unapply(_))
+  )
+
   val errorMessage = "error"
 
   //uidのTweet全情報を表示する
@@ -118,5 +128,34 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
     for{
       tweet <- TweetRepository.filterByUserId((User.Id(uid.get)))
     }yield Ok(s"${tweet.map(x => x.v.text)}")
+  }
+
+  //フォロー機能(UserEachRelationを作成)
+  def follow(uid:Option[Long])  = Action.async{implicit req =>
+    val followByForm = followForm.bindFromRequest.get
+    val follow       = UserEachRelation.WithNoId(User.Id(uid.get), User.Id(followByForm.targetid))
+    for{
+      addFollow <- UserEachRelationRepository.add(follow)
+    }yield Ok(addFollow.toString)
+  }
+
+  // //アンフォロー機能
+  // def unFollow(uid:Option[Long])  = Action.async{implicit req =>
+  //   val followByForm = followForm.bindFromRequest.get
+  //   val follow       = UserEachRelation.WithNoId(User.Id(uid.get), User.Id(followByForm.targetid))
+  //   for{
+  //     addFollow <- UserEachRelationRepository.add(follow)
+  //   }yield Ok(addFollow.toString)
+  // }
+
+  //Tweet投稿画面の表示
+  def showPostForm() =    Action { implicit req:
+                                      Request[AnyContent] =>
+    Ok(views.html.postTweet(postTweetForm))
+  }
+
+  //ユーザ一覧画面の表示
+  def showAllUser() =    Action { implicit req: Request[AnyContent] =>
+    Ok(views.html.ff(followForm))
   }
 }

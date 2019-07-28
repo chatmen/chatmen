@@ -30,7 +30,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
       "password"    -> text
     )(UserInfoAdd.apply)(UserInfoAdd.unapply)
   )
-
+ 
   //認証のデータをバインド
   val userAuthForm = Form(
     mapping(
@@ -63,7 +63,8 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
       id                <- UserRepository.add(addUser)
       passByWithNoId = UserPassword.WithNoId(User.Id(id), hashFromPassword)
       pass           <- UserPasswordRepository.update(passByWithNoId)
-    }yield Ok(id.toString)
+      }yield Ok(s"your id = ${id.toString} and success.")
+    //}yield Ok()
   }
 
   //フォームを受け取り、認証
@@ -82,6 +83,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
 
   //認証機能: メアドから、同一idのパスワードを取得し、ハッシュ化し、パスワードの検証
   def checkUser() = Action.async{implicit req =>
+    //メアドとパスワード
     val form = ("e@s.net","hoge")
     for{
       user   <- UserRepository.getEmail(form._1)
@@ -103,6 +105,16 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
   def sendForm() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.signup(userInfoForm))
   }
+
+  //ユーザ登録完了画面
+  def complete() = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.complete())
+  }
+
+  // //profile画面の表示
+  // def profile() =    Action { implicit request: Request[AnyContent] =>
+  //   Ok(views.html.profile(userInfoForm))
+  // }
 }
 
 

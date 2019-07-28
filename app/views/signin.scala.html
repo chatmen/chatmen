@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/bootstrap.css">
     <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/form/signin.css">
   </head>
-  @form(routes.UserController.commitUserInfo()) {
+  @form(routes.UserController.checkUserByForm()) {
     @CSRF.formField
     @inputText(hoge("name"))
     @inputText(hoge("email"))

@@ -19,9 +19,10 @@
   @form(routes.TweetController.postTweet()) {
     @CSRF.formField
     @inputText(hoge("uid"))
-    @inputText(hoge("Tweet内容"))
-    <button onclick="location.href='http://localhost:9000/complete'">send</button>
+    @inputText(hoge("text"))
+    <button onclick="location.href='http://localhost:9000/main-menu'">send</button>
     }
     <body>
     </body>
 </html>
+
