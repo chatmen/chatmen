@@ -7,6 +7,9 @@
 GET     /                           controllers.HomeController.index
 GET     /signin                     controllers.UserController.signin
 POST    /signin                     controllers.UserController.checkUserByForm()
+#email,passフォーム
+GET     /formin                     controllers.UserController.formin
+POST    /formin                     controllers.UserController.checkUserByForm()
 GET     /signup                     controllers.UserController.sendForm
 POST    /signup                     controllers.UserController.registerUser
 GET     /main-menu                  controllers.HomeController.mainMenu

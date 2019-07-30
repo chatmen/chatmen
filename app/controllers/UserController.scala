@@ -68,6 +68,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   //フォームを受け取り、認証
+  //成功時にセッションへの値の保存
   def checkUserByForm() = Action.async{implicit req =>
     val post = userAuthForm.bindFromRequest.get
     val form = (post.email, post.password)
@@ -76,10 +77,33 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
        pass   <- UserPasswordRepository.get(user.get.id)
        result =  UserPassword.verify(form._2 ,pass.get.v.hash)
      }yield result match {
-       case true  => Ok(s"${user.get.v}")
+       case true  => Ok("Welcome!").withSession("connected" -> user.toString)
        case false => BadRequest("user not exist")
      }
   }
+
+  //セッション値の読み込み
+  def index() = Action { request =>
+    request.session.get("connected").map { user =>
+      Ok("Hello " + user)
+    }.getOrElse {
+      Unauthorized("Oops, you are not connected")
+    }
+  }
+
+  // //フォームを受け取り、認証
+  // def checkUserByForm() = Action.async{implicit req =>
+  //   val post = userAuthForm.bindFromRequest.get
+  //   val form = (post.email, post.password)
+  //   for{
+  //     user   <- UserRepository.getEmail(form._1)
+  //     pass   <- UserPasswordRepository.get(user.get.id)
+  //     result =  UserPassword.verify(form._2 ,pass.get.v.hash)
+  //   }yield result match {
+  //     case true  => Ok(s"${user.get.v}")
+  //     case false => BadRequest("user not exist")
+  //   }
+  // }
 
   //認証機能: メアドから、同一idのパスワードを取得し、ハッシュ化し、パスワードの検証
   def checkUser() = Action.async{implicit req =>
@@ -99,6 +123,12 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
     def signin() =    Action { implicit request: Request[AnyContent] =>
     //val a = "hoge"
     Ok(views.html.signin(userInfoForm))
+    }
+
+  //signin画面の表示
+  def formin() =    Action { implicit request: Request[AnyContent] =>
+    //val a = "hoge"
+    Ok(views.html.formin(userAuthForm))
   }
 
   //signup画面の表示
