@@ -1,4 +1,3 @@
-@(hoge: Form[Follow])(implicit request:RequestHeader, messages: Messages)
 @import helper._
 @import controllers.UserController
 @import controllers.TweetController
@@ -17,13 +16,14 @@
     <link rel="stylesheet" href="http://localhost:9000/assets/stylesheets/signup/form-validation.css">
   </head>
   <!-- Controller.follwに変更 -->
-  @form(routes.TweetController.postTweet()) {
-    @CSRF.formField
-    @inputText(hoge("uid"))
-    @inputText(hoge("text"))
-    <button onclick="location.href='http://localhost:9000/main-menu'">send</button>
-    }
+  <!-- パラメータに直接投げる -->
+  <p>follow</p>
+  <a href=@{routes.TweetController.follow(6L)}>send</a>
 
-    <body>
+  <p>unfollow</p>
+  <!-- アットマーク入れよう -->
+  <!-- <a href={routes.TweetController.follow(6L)}>send</a> -->
+
+  <body>
     </body>
   </html>

@@ -17,6 +17,7 @@
   </head>
   @form(routes.UserController.registerUser()) {
     @CSRF.formField
+    @{routes.UserController.registerUser()}
     @inputText(hoge("name"))
     @inputText(hoge("email"))
     @inputText(hoge("password"))

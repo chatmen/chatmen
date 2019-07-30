@@ -131,31 +131,38 @@ class TweetController @Inject()(cc: ControllerComponents) extends AbstractContro
   }
 
   //フォロー機能(UserEachRelationを作成)
-  def follow(uid:Option[Long])  = Action.async{implicit req =>
-    val followByForm = followForm.bindFromRequest.get
-    val follow       = UserEachRelation.WithNoId(User.Id(uid.get), User.Id(followByForm.targetid))
+  def follow(uid:Long)  = Action.async{implicit req =>
+    //val followByForm = followForm.bindFromRequest.get
+    val follow       = UserEachRelation.WithNoId(User.Id(1), User.Id(uid))
     for{
       addFollow <- UserEachRelationRepository.add(follow)
     }yield Ok(addFollow.toString)
   }
 
-  // //アンフォロー機能
-  // def unFollow(uid:Option[Long])  = Action.async{implicit req =>
-  //   val followByForm = followForm.bindFromRequest.get
-  //   val follow       = UserEachRelation.WithNoId(User.Id(uid.get), User.Id(followByForm.targetid))
-  //   for{
-  //     addFollow <- UserEachRelationRepository.add(follow)
-  //   }yield Ok(addFollow.toString)
-  // }
+  //アンフォロー機能
+  def unfollow(uid:Long)  = Action.async{implicit req =>
+    for{
+      removeFollow <- UserEachRelationRepository.remove(UserEachRelation.Id(uid))
+    }yield Ok(removeFollow.toString)
+  }
 
   //Tweet投稿画面の表示
-  def showPostForm() =    Action { implicit req:
-                                      Request[AnyContent] =>
+  def showPostForm() =    Action { implicit req: Request[AnyContent] =>
     Ok(views.html.postTweet(postTweetForm))
   }
 
   //ユーザ一覧画面の表示
   def showAllUser() =    Action { implicit req: Request[AnyContent] =>
-    Ok(views.html.ff(followForm))
+    Ok(views.html.ff())
   }
 }
+
+
+// //アンフォロー機能
+// def unfollow(uid:Long)  = Action.async{implicit req =>
+//   val unFollowByForm    = followForm.bindFromRequest.get
+//   val follow            = UserEachRelation.WithNoId(User.Id(uid.get), User.Id(followByForm.targetid))
+//   for{
+//     unfollow <- UserEachRelationRepository.add(unfollow)
+//   }yield Ok(addFollow.toString)
+// }

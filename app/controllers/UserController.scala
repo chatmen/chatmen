@@ -30,7 +30,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
       "password"    -> text
     )(UserInfoAdd.apply)(UserInfoAdd.unapply)
   )
- 
+
   //認証のデータをバインド
   val userAuthForm = Form(
     mapping(
